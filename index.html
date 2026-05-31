@@ -11,22 +11,33 @@
     <link href="https://fonts.googleapis.com/css?family=DM%20Sans" rel="stylesheet"/>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            background-color: #191919;
+            color: #87FAFF;
+            font-family: DM Sans,sans-serif;
         }
         .button {
-            background-color:   #559EFA;
-            color:              #191919;
-            text-align:         center;
-            font-weight:        bold;
-            font-size:          20px;
-            padding:            10px;
-            border-radius:      5px;
-            text-decoration:    none;
-            min-width:          128px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            min-width: 128px;
+            border: 1px solid transparent;
+            transition: opacity 120ms ease-in-out;
+        }
+        .button:hover {
+            opacity: 0.88;
+        }
+        .button-primary {
+            background-color: #559EFA;
+            color: #191919;
+        }
+        .button-secondary {
+            background-color: transparent;
+            color: #559EFA;
+            border-color: #559EFA;
         }
         .grid-container {
             display: grid;
@@ -35,12 +46,34 @@
             justify-items: center;
             align-items: center;
         }
-        .container {
+        .site-header {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            left: 20px;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 2;
+        }
+        .header-utility-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #87FAFF;
+            text-decoration: none;
+            opacity: 0.78;
+            font-size: 16px;
+        }
+        .header-utility-link:hover {
+            opacity: 1;
+        }
+        .hero {
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
-            height: 400px;
+            padding: clamp(88px, 12vh, 132px) 20px 32px;
+            box-sizing: border-box;
         }
         .logo {
             margin: 30px;
@@ -53,18 +86,59 @@
             margin: 30px;
             min-height: 100%;
         }
+        .playground-section {
+            max-width: 1100px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .playground-title {
+            color: #559EFA;
+            font-size: 32px;
+            margin: 0 0 14px;
+        }
+        .playground-fallback {
+            color: #87FAFF;
+            opacity: 0.85;
+            font-size: 16px;
+            margin: 12px 0 0;
+        }
+        .playground-fallback[hidden] {
+            display: none;
+        }
+        .playground-fallback a {
+            color: #87FAFF;
+        }
         @media (max-width: 768px) {
-            .container {
+            .hero {
                 flex-direction: column;
+                padding-top: 84px;
             }
             .logo {
                 margin-bottom: -70px;
             }
+            .grid-container {
+                grid-template-columns: 1fr;
+                width: 100%;
+            }
+            .button {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .header-utility-link .link-label {
+                display: none;
+            }
         }
     </style>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/triton-play-widget@0.1.0/dist/triton-play-widget.es.js"></script>
 </head>
-<body style="background-color: #191919; font-family: DM Sans,sans-serif">
-<div class="container">
+<body>
+<header class="site-header">
+    <a href="https://github.com/TritonVM/triton-vm" class="header-utility-link" aria-label="GitHub">
+        <img src="img/GitHub-Mark.svg" alt="Github's Octocat Mark" height="32">
+    </a>
+</header>
+<section class="hero">
     <img src="img/triton.svg" alt="Logo of Triton VM" class="logo">
     <div class="content">
         <h1 style="color: #559EFA; font-size: 60px; margin: 0 0 0 10px;">Triton VM</h1>
@@ -73,24 +147,73 @@
             STARKs for Triton VM
         </p>
         <div class="grid-container">
-            <a href="https://github.com/TritonVM/triton-vm" class="button">
-                <img src="img/GitHub-Mark.svg" alt="GitHub Logo" height="20px" style="margin-bottom: -1px">
-                GitHub
-            </a>
-            <a href="./spec/" class="button">
+            <a href="./spec/" class="button button-primary">
                 <img src="img/mdbook.svg" alt="mdBook Logo" height="20px" style="margin-bottom: -2px">
                 Spec
             </a>
-            <a href="https://crates.io/crates/triton-tui" class="button">
+            <a href="./tutorial/" class="button button-primary">
+                <img src="img/mdbook.svg" alt="mdBook Logo" height="20px" style="margin-bottom: -2px">
+                Tutorial
+            </a>
+            <a href="https://crates.io/crates/triton-tui" class="button button-secondary">
                 <img src="img/prompt.svg" alt="shell prompt" height="20px" style="margin-bottom: -2px">
                 TUI
             </a>
-            <a href="https://crates.io/crates/triton-cli" class="button">
+            <a href="https://crates.io/crates/triton-cli" class="button button-secondary">
                 <img src="img/prompt.svg" alt="shell prompt" height="20px" style="margin-bottom: -2px">
                 CLI
             </a>
         </div>
     </div>
-</div>
+</section>
+<section class="playground-section" id="playground">
+    <triton-playground>
++++
+public_input = [10]
++++
+
+push 0
+push 1
+read_io 1
+
+dup 0
+skiz
+call fibonacci_loop
+
+pop 1
+write_io 1
+halt
+
+fibonacci_loop:
+    push -1
+    add
+    swap 2
+    dup 1
+    add
+    swap 1
+    swap 2
+    dup 0
+    skiz
+    recurse
+    return
+    </triton-playground>
+    <p class="playground-fallback" id="playground-load-fallback" hidden>
+        Playground failed to load. View examples in <a href="./tutorial/">Tutorial</a>.
+    </p>
+    <noscript>
+        <p class="playground-fallback">Playground requires JavaScript. View examples in <a href="./tutorial/">Tutorial</a>.</p>
+    </noscript>
+</section>
+<script>
+    // Reveal a fallback if the triton-playground script fails to register.
+    setTimeout(function () {
+        if (!customElements.get("triton-playground")) {
+            var fallback = document.getElementById("playground-load-fallback");
+            if (fallback) {
+                fallback.hidden = false;
+            }
+        }
+    }, 2500);
+</script>
 </body>
 </html>

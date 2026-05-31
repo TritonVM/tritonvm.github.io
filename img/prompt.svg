@@ -7,7 +7,7 @@
    viewBox="0 0 13.070995 10.5833"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    sodipodi:docname="prompt.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -42,14 +42,14 @@
     <g
        aria-label="❯_"
        id="text3968"
-       style="font-size:10.5833px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';stroke-width:0.264583">
+       style="font-size:10.5833px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';stroke-width:0.264583;fill:#559efa;fill-opacity:1">
       <path
          d="m 71.569272,120.1882 3.472645,-5.29165 -3.472645,-5.29165 h 2.335768 l 3.410633,5.29165 -3.410633,5.29165 z"
-         style="font-family:'Fira Mono';-inkscape-font-specification:'Fira Mono, Normal'"
+         style="font-family:'Fira Mono';-inkscape-font-specification:'Fira Mono, Normal';fill:#559efa;fill-opacity:1"
          id="path33590" />
       <path
          d="m 79.348617,119.57189 h 5.29165 v -0.78316 h -5.29165 z"
-         style="font-family:'Fira Mono';-inkscape-font-specification:'Fira Mono, Normal'"
+         style="font-family:'Fira Mono';-inkscape-font-specification:'Fira Mono, Normal';fill:#559efa;fill-opacity:1"
          id="path33592" />
     </g>
   </g>

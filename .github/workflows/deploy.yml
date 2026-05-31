@@ -44,6 +44,12 @@ jobs:
           mkdir -p ./spec
           mv triton-vm/specification/book/* ./spec/
 
+      - name: Build TASM tutorial
+        run: |
+          mdbook build triton-vm/tutorial
+          mkdir -p ./tutorial
+          mv triton-vm/tutorial/book/* ./tutorial/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
