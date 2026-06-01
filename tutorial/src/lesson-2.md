@@ -196,7 +196,8 @@ Make sure that between iterations, the stack retains the same general shape.
 </details>
 <details>
 <summary>Hint 3</summary>
-A good loop invariant is `// _ [input; i] acc i`, where `i` is initially `n` and counts down to 0.
+A good loop invariant is <code>// _ [input; i] acc i</code>, where <code>i</code> is initially <code>n</code> and counts
+down to 0.
 </details>
 <details>
 <summary>Solution</summary>
