@@ -7,9 +7,9 @@ name: Build & Maybe Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -27,33 +27,53 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --version 0.15.0
+
       - name: Install mdBook
         run: |
           cargo install mdbook
           cargo install mdbook-katex@0.10.0-alpha # https://github.com/lzanini/mdbook-katex/issues/130
 
       - name: Fetch Triton VM repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: TritonVM/triton-vm
           path: triton-vm
 
-      - name: Build Triton VM specification
-        run: |
-          mdbook build triton-vm/specification
-          mkdir -p ./spec
-          mv triton-vm/specification/book/* ./spec/
+      - name: Install widget dependencies
+        working-directory: triton-play/widget
+        run: npm ci
 
-      - name: Build TASM tutorial
+      - name: Build triton-play widget
+        working-directory: triton-play/widget
+        run: npm run build
+
+      - name: Build tutorial
+        run: mdbook build ./tutorial
+
+      - name: Build Triton VM specification
+        run: mdbook build triton-vm/specification
+
+      - name: Assemble site
         run: |
-          mdbook build triton-vm/tutorial
-          mkdir -p ./tutorial
-          mv triton-vm/tutorial/book/* ./tutorial/
+          mkdir -p ./site
+          cp index.html site.webmanifest ./site/
+          cp -r img ./site/img
+          cp -r ./triton-vm/specification/book ./site/spec
+          cp -r ./tutorial/book ./site/tutorial
+          mkdir -p ./site/triton-play/widget
+          cp -r ./triton-play/widget/dist ./site/triton-play/widget/dist
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./site
 
       - name: Deploy to GitHub Pages
         if: >

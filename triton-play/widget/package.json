@@ -1,0 +1,64 @@
+{
+  "name": "triton-play-widget",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Embeddable browser widget for Triton VM programs",
+  "author": "Triton Software AG",
+  "license": "MIT OR Apache-2.0",
+  "homepage": "https://github.com/TritonVM/tritonvm.github.io#readme",
+  "bugs": {
+    "url": "https://github.com/TritonVM/tritonvm.github.io/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TritonVM/tritonvm.github.io.git",
+    "directory": "packages/triton-play-widget"
+  },
+  "keywords": [
+    "triton-vm",
+    "wasm",
+    "widget",
+    "web-component",
+    "mdbook"
+  ],
+  "type": "module",
+  "sideEffects": true,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/triton-play-widget.es.js",
+  "module": "./dist/triton-play-widget.es.js",
+  "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/triton-play-widget.iife.js",
+  "jsdelivr": "./dist/triton-play-widget.iife.js",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/triton-play-widget.es.js",
+      "default": "./dist/triton-play-widget.es.js"
+    }
+  },
+  "scripts": {
+    "build:wasm": "wasm-pack build --target web --out-dir widget/wasm ./.. && echo 'wasm-pack done'",
+    "build:widget": "vite build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build": "npm run build:wasm && npm run build:widget && npm run build:types",
+    "dev": "npm run build:wasm && npm run dev:serve",
+    "dev:serve": "vite",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "npm run build:wasm && playwright test",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "dependencies": {
+    "@codemirror/commands": "^6.8.1",
+    "@codemirror/language": "^6.11.0",
+    "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.4",
+    "codemirror": "^6.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

@@ -1,0 +1,29 @@
+[package]
+name = "triton-play"
+version = "0.1.0"
+description = """
+A browser widget for executing programs written for Triton VM.
+"""
+
+edition = "2024"
+rust-version = "1.91"
+authors = ["Triton Software AG"]
+license = "MIT OR Apache-2.0"
+
+readme = "README.md"
+homepage = "https://triton-vm.org/"
+repository = "https://github.com/TritonVM/tritonvm.github.io"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+thiserror = "2"
+toml = "1.1"
+triton-vm = "3.0.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2"
+
+[dev-dependencies]
+assert2 = "0.4.0"

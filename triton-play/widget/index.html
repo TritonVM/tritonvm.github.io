@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triton Play — demo</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 860px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 { font-size: 1.4rem; }
+      triton-playground {
+        display: block;
+        margin: 1.5rem 0;
+      }
+    </style>
+    <!-- In production: replace with your deployed widget URL -->
+    <script type="module" src="/src/index.ts"></script>
+  </head>
+  <body>
+    <h1>Triton Play</h1>
+    <p>
+      An embeddable browser widget for writing and running
+      <a href="https://triton-vm.org">Triton VM</a> programs.
+    </p>
+
+    <h2>Fibonacci (public input)</h2>
+    <triton-playground>
++++
+public_input = [10]
++++
+push 0
+push 1
+read_io 1
+
+dup 0
+skiz
+call fib_loop
+
+pop 1
+write_io 1
+halt
+
+fib_loop:
+    push -1
+    add
+    swap 2
+    dup 1
+    add
+    swap 1
+    swap 2
+    dup 0
+    skiz
+    recurse
+    return
+    </triton-playground>
+
+    <h2>Simple counter (no input)</h2>
+    <triton-playground>
+push 1
+push 2
+add
+write_io 1
+halt
+    </triton-playground>
+
+    <h2>Explicit light theme (host hint)</h2>
+    <triton-playground id="theme-light-widget" data-theme="light">
+start:
+push 1
+dup 0
+addi 5
+write_mem 1
+read_mem 1
+hash
+eq
+call next
+halt
+
+next:
+read_io 1
+write_io 1
+return
+    </triton-playground>
+
+    <h2>Explicit dark theme (host hint)</h2>
+    <triton-playground id="theme-dark-widget" data-theme="dark">
+entry:
+push 9
+push 3
+div_mod
+xx_add
+sponge_init
+sponge_absorb
+merkle_step
+call done
+halt
+
+done:
+write_io 1
+return
+    </triton-playground>
+
+    <h2>Host-controlled widget</h2>
+    <div id="host-widget"></div>
+    <button id="host-run" style="margin-top:8px">Run from host</button>
+
+    <script type="module">
+      import { mountTritonPlay } from '/src/index.ts';
+
+      const handle = mountTritonPlay(document.getElementById('host-widget'), {
+        source: 'push 42\nwrite_io 1\nhalt',
+        on: {
+          result: ({ output }) =>
+            console.log('[host] result:', output),
+          error: ({ message }) =>
+            console.error('[host] error:', message),
+          statechange: ({ state }) =>
+            console.log('[host] state →', state),
+        },
+      });
+
+      document.getElementById('host-run').addEventListener('click', () =>
+        handle.run()
+      );
+    </script>
+  </body>
+</html>
+

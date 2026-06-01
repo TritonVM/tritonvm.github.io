@@ -130,7 +130,7 @@
             }
         }
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/triton-play-widget@0.1.0/dist/triton-play-widget.es.js"></script>
+    <script type="module" src="triton-play/widget/dist/triton-play-widget.es.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -171,31 +171,29 @@
 +++
 public_input = [10]
 +++
+            // _
+push 0      // _ 0
+push 1      // _ 0 1
+read_io 1   // _ 0 1 n
 
-push 0
-push 1
-read_io 1
+dup 0       // _ 0 1 n n
+skiz        // _ 0 1 n
+  call fibonacci
 
-dup 0
-skiz
-call fibonacci_loop
-
-pop 1
-write_io 1
+pop 1       // _ a b
+write_io 1  // _ a
 halt
 
-fibonacci_loop:
-    push -1
-    add
-    swap 2
-    dup 1
-    add
-    swap 1
-    swap 2
-    dup 0
-    skiz
+fibonacci:
+  addi -1   // _ a b (i-1)
+  swap 2    // _ (i-1) b a
+  dup 1     // _ (i-1) b a b
+  add       // _ (i-1) b (a+b)
+  pick 2    // _ b (a+b) (i-1)
+  dup 0     // _ b (a+b) (i-1) (i-1)
+  skiz      // _ b (a+b) (i-1)
     recurse
-    return
+  return
     </triton-playground>
     <p class="playground-fallback" id="playground-load-fallback" hidden>
         Playground failed to load. View examples in <a href="./tutorial/">Tutorial</a>.
