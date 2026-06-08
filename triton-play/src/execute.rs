@@ -24,12 +24,12 @@ pub enum ExecutionError {
 }
 
 pub fn execute_widget_document(
-    document: &WidgetDocument,
+    document: WidgetDocument,
 ) -> Result<ExecutionOutput, ExecutionError> {
     let mut state = VMState::new(
         document.program.clone(),
-        document.frontmatter.public_input.clone(),
-        document.frontmatter.non_determinism.clone(),
+        document.frontmatter.public_input,
+        document.frontmatter.non_determinism,
     );
 
     while !state.halting {
@@ -63,37 +63,37 @@ mod tests {
     #[test]
     fn executes_fibonacci() {
         let document = parse_widget_document(
-            r#"
-            +++
-            public_input = [10]
-            +++
-            push 0
-            push 1
-            read_io 1
-            dup 0
-            skiz
-            call fib_loop
-            pop 1
-            write_io 1
-            halt
+            "
++++
+public_input = [10]
++++
+push 0
+push 1
+read_io 1
+dup 0
+skiz
+call fib_loop
+pop 1
+write_io 1
+halt
 
-            fib_loop:
-                push -1
-                add
-                swap 2
-                dup 1
-                add
-                swap 1
-                swap 2
-                dup 0
-                skiz
-                recurse
-                return
-        "#,
+fib_loop:
+    push -1
+    add
+    swap 2
+    dup 1
+    add
+    swap 1
+    swap 2
+    dup 0
+    skiz
+    recurse
+    return
+            ",
         )
         .expect("document should parse");
 
-        let result = execute_widget_document(&document).expect("execution should succeed");
+        let result = execute_widget_document(document).expect("execution should succeed");
         assert_eq!(result.output, vec![89]);
     }
 
@@ -103,26 +103,26 @@ mod tests {
         // Executing `halt` with no write_io is fine. Let's trigger a panic VM error instead.
         let doc_with_read = parse_widget_document("read_io 1\nhalt").expect("should parse");
         // No public input → VM should error when trying to read
-        let err = execute_widget_document(&doc_with_read);
+        let err = execute_widget_document(doc_with_read);
         assert!(matches!(err, Err(ExecutionError::VmError(_))));
     }
 
     #[test]
     fn execution_honors_max_steps() {
         let document = parse_widget_document(
-            r#"
-            +++
-            max_steps = 1
-            +++
-            push 1
-            push 2
-            add
-            halt
-        "#,
+            "
++++
+max_steps = 1
++++
+push 1
+push 2
+add
+halt
+            ",
         )
         .expect("document should parse");
 
-        let err = execute_widget_document(&document);
+        let err = execute_widget_document(document);
         assert!(matches!(
             err,
             Err(ExecutionError::MaxStepsExceeded {

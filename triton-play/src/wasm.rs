@@ -21,7 +21,7 @@ use crate::execute::execute_widget_document;
 pub fn execute_document(source: &str) -> String {
     match parse_widget_document(source) {
         Err(e) => json_error(&e.to_string()),
-        Ok(doc) => match execute_widget_document(&doc) {
+        Ok(doc) => match execute_widget_document(doc) {
             Err(e) => json_error(&e.to_string()),
             Ok(out) => {
                 let items: Vec<String> = out.output.iter().map(|v| format!("\"{v}\"")).collect();
